@@ -23,5 +23,4 @@ def billing():
     if request.method == "POST":
         return jsonify(
             isError=False, message="Success", statusCode=200, data= "POST"
-
         )

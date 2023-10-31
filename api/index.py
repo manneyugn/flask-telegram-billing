@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import os
-load_dotenv()
+import telegram
 
 app = Flask(__name__)
 
@@ -17,10 +17,9 @@ def about():
 
 
 @app.route("/billing", methods=["GET", "POST"])
-def billing():
+async def billing():
     if request.method == "GET":
         return jsonify(isError=False, message="Success", statusCode=200, data="Billing")
     if request.method == "POST":
-        return jsonify(
-            isError=False, message="Success", statusCode=200, data= "POST"
-        )
+        print(request.json)
+        return jsonify(isError=False, message="Success", statusCode=200, data="POST")

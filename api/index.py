@@ -22,6 +22,6 @@ def billing():
         return jsonify(isError=False, message="Success", statusCode=200, data="Billing")
     if request.method == "POST":
         return jsonify(
-            isError=False, message="Success", statusCode=200, data= os.environ.get('TELEGRAM_KEY')
+            isError=False, message="Success", statusCode=200, data= "POST"
 
         )

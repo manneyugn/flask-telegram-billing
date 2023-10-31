@@ -21,5 +21,25 @@ async def billing():
     if request.method == "GET":
         return jsonify(isError=False, message="Success", statusCode=200, data="Billing")
     if request.method == "POST":
-        print(request.json)
+        body = request.json
+        message = body.message
+        if message is not None:
+            text = message.text
+            if text is not None:
+                bot = telegram.Bot(os.getenv("TELEGRAM_KEY"))
+
+                token = text.split()
+                if len(token) > 0:
+                    if token[0] == "/start":
+                        print("/start")
+                        await bot.send_message(text="/start")
+                    elif token[0] == "/buy":
+                        print("/buy")
+                        await bot.send_message(text="/buy")
+                    elif token[0] == "/link":
+                        print("/link")
+                        await bot.send_message(text="/link")
+                    else:
+                        print("Câu lệnh chưa được hỗ trợ")
+                        await bot.send_message(text="Câu lệnh chưa được hỗ trợ")
         return jsonify(isError=False, message="Success", statusCode=200, data="POST")

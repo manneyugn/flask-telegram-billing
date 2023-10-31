@@ -32,14 +32,16 @@ async def billing():
                 if len(token) > 0:
                     if token[0] == "/start":
                         print("/start")
-                        await bot.send_message(text="/start")
+                        await bot.send_message(chat_id=-4012657625, text="/start")
                     elif token[0] == "/buy":
                         print("/buy")
-                        await bot.send_message(text="/buy")
+                        await bot.send_message(chat_id=-4012657625, text="/buy")
                     elif token[0] == "/link":
                         print("/link")
-                        await bot.send_message(text="/link")
+                        await bot.send_message(chat_id=-4012657625, text="/link")
                     else:
                         print("Câu lệnh chưa được hỗ trợ")
-                        await bot.send_message(text="Câu lệnh chưa được hỗ trợ")
+                        await bot.send_message(
+                            chat_id=-4012657625, text="Câu lệnh chưa được hỗ trợ"
+                        )
         return jsonify(isError=False, message="Success", statusCode=200, data="POST")

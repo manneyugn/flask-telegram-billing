@@ -42,7 +42,7 @@ async def billing():
                             chat_id=os.getenv("CHAT_ID"), text="/start"
                         )
                     elif token[0] == "/buy":
-                        res = requests.get('https://script.google.com/macros/s/AKfycbxfTbWaY5Sx3m2Quoy6u13B40Hq1FBTw0zcVMvJxDtE5NAQtpBROY630NrWWlI8ya-8/exec?item=' + token [1] + '&price=' +token[2] + '&buyer=' + sender['last_name'] + ' ' + sender['first_name'])
+                        res = requests.get(os.getenv("GOOGLE_APP_SCRIPT") + '?item=' + token [1] + '&price=' +token[2] + '&buyer=' + sender['last_name'] + ' ' + sender['first_name'])
                         data = json.loads(res.text)
                         if data['result'] == "success":
                             await bot.send_message(

@@ -29,6 +29,7 @@ async def billing():
         return jsonify(isError=False, message="Success", statusCode=200, data="Billing")
     if request.method == "POST":
         body = request.json
+        print("body", body)
         message = body["message"]
         if message is not None:
             text = message["text"]

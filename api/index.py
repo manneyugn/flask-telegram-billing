@@ -30,9 +30,9 @@ async def billing():
     if request.method == "POST":
         body = request.json
         print("body", body)
-        if "message" in body:
-            message = body["message"]
-            if message is not None:
+        message = body["message"]
+        if message is not None:
+            if "text" in message:
                 text = message["text"]
                 sender = message['from']
                 if text is not None:

@@ -30,36 +30,37 @@ async def billing():
     if request.method == "POST":
         body = request.json
         print("body", body)
-        message = body["message"]
-        if message is not None:
-            text = message["text"]
-            sender = message['from']
-            if text is not None:
-                bot = telegram.Bot(os.getenv("TELEGRAM_KEY"))
-                token = text.split()
-                if len(token) > 0:
-                    if token[0] == "/start":
-                        await bot.send_message(
-                            chat_id=os.getenv("CHAT_ID"), text="/start"
-                        )
-                    elif token[0] == "/buy":
-                        res = requests.get(os.getenv("GOOGLE_APP_SCRIPT") + '?item=' + token [1] + '&price=' +token[2] + '&buyer=' + sender['last_name'] + ' ' + sender['first_name'])
-                        data = json.loads(res.text)
-                        if data['result'] == "success":
+        if "message" in body:
+            message = body["message"]
+            if message is not None:
+                text = message["text"]
+                sender = message['from']
+                if text is not None:
+                    bot = telegram.Bot(os.getenv("TELEGRAM_KEY"))
+                    token = text.split()
+                    if len(token) > 0:
+                        if token[0] == "/start":
                             await bot.send_message(
-                                chat_id=os.getenv("CHAT_ID"), text="Mua hàng thành công " +token [1] + " với giá " +token[2]
+                                chat_id=os.getenv("CHAT_ID"), text="/start"
+                            )
+                        elif token[0] == "/buy":
+                            res = requests.get(os.getenv("GOOGLE_APP_SCRIPT") + '?item=' + token [1] + '&price=' +token[2] + '&buyer=' + sender['last_name'] + ' ' + sender['first_name'])
+                            data = json.loads(res.text)
+                            if data['result'] == "success":
+                                await bot.send_message(
+                                    chat_id=os.getenv("CHAT_ID"), text="Mua hàng thành công " +token [1] + " với giá " +token[2]
+                                )
+                            else:
+                                await bot.send_message(
+                                    chat_id=os.getenv("CHAT_ID"), text="Mua hàng thất bại " + data['error']
+                                )
+                        elif token[0] == "/link":
+                            await bot.send_message(
+                                chat_id=os.getenv("CHAT_ID"), text="/link"
                             )
                         else:
                             await bot.send_message(
-                                chat_id=os.getenv("CHAT_ID"), text="Mua hàng thất bại " + data['error']
+                                chat_id=os.getenv("CHAT_ID"),
+                                text="Câu lệnh chưa được hỗ trợ",
                             )
-                    elif token[0] == "/link":
-                        await bot.send_message(
-                            chat_id=os.getenv("CHAT_ID"), text="/link"
-                        )
-                    else:
-                        await bot.send_message(
-                            chat_id=os.getenv("CHAT_ID"),
-                            text="Câu lệnh chưa được hỗ trợ",
-                        )
         return jsonify(isError=False, message="Success", statusCode=200, data="POST")

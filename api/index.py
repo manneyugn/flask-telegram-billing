@@ -8,10 +8,11 @@ import json
 
 app = Flask(__name__)
 
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 
-SAMPLE_SPREADSHEET_ID = '1XqamczY56e232SfJv77yObfjC8sZiEet-yHUpgeHpbo'
-SAMPLE_RANGE_NAME = 'Class Data!A2:E'
+SAMPLE_SPREADSHEET_ID = "1XqamczY56e232SfJv77yObfjC8sZiEet-yHUpgeHpbo"
+SAMPLE_RANGE_NAME = "Class Data!A2:E"
+
 
 @app.route("/")
 def home():
@@ -34,7 +35,7 @@ async def billing():
         if message is not None:
             if "text" in message:
                 text = message["text"]
-                sender = message['from']
+                sender = message["from"]
                 if text is not None:
                     bot = telegram.Bot(os.getenv("TELEGRAM_KEY"))
                     token = text.split()
@@ -44,19 +45,36 @@ async def billing():
                                 chat_id=os.getenv("CHAT_ID"), text="/start"
                             )
                         elif token[0] == "/buy":
-                            res = requests.get(os.getenv("GOOGLE_APP_SCRIPT") + '?item=' + token [1] + '&price=' +token[2] + '&buyer=' + sender['last_name'] + ' ' + sender['first_name'])
+                            res = requests.get(
+                                os.getenv("GOOGLE_APP_SCRIPT")
+                                + "?item="
+                                + token[1]
+                                + "&price="
+                                + token[2]
+                                + "&buyer="
+                                + sender["last_name"]
+                                + " "
+                                + sender["first_name"]
+                            )
                             data = json.loads(res.text)
-                            if data['result'] == "success":
+                            if data["result"] == "success":
                                 await bot.send_message(
-                                    chat_id=os.getenv("CHAT_ID"), text="Mua hàng thành công " +token [1] + " với giá " +token[2]
+                                    chat_id=os.getenv("CHAT_ID"),
+                                    text="Mua hàng thành công "
+                                    + " ".join(token[1 : len(token) - 1])
+                                    + " với giá "
+                                    + token[len(token - 1)],
                                 )
                             else:
                                 await bot.send_message(
-                                    chat_id=os.getenv("CHAT_ID"), text="Mua hàng thất bại " + data['error']
+                                    chat_id=os.getenv("CHAT_ID"),
+                                    text="Mua hàng thất bại " + data["error"],
                                 )
                         elif token[0] == "/link":
                             await bot.send_message(
-                                chat_id=os.getenv("CHAT_ID"), text="vào đây để xem bảng chi trong tháng " + os.getenv("LINK_SHEET")
+                                chat_id=os.getenv("CHAT_ID"),
+                                text="vào đây để xem bảng chi trong tháng "
+                                + os.getenv("LINK_SHEET"),
                             )
                         else:
                             await bot.send_message(

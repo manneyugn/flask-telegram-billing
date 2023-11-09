@@ -45,27 +45,33 @@ async def billing():
                                 chat_id=os.getenv("CHAT_ID"), text="/start"
                             )
                         elif token[0] == "/buy":
-                            res = requests.get(
-                                os.getenv("GOOGLE_APP_SCRIPT")
-                                + "?item="
-                                + token[1]
-                                + "&price="
-                                + token[2]
-                                + "&buyer="
-                                + sender["last_name"]
-                                + " "
-                                + sender["first_name"]
-                            )
-                            data = json.loads(res.text)
-                            if data["result"] == "success":
-                                await bot.send_message(
-                                    chat_id=os.getenv("CHAT_ID"),
-                                    text="Mua hàng thành công "
+                            try:
+                                res = requests.get(
+                                    os.getenv("GOOGLE_APP_SCRIPT")
+                                    + "?item="
                                     + " ".join(token[1 : len(token) - 1])
-                                    + " với giá "
-                                    + token[len(token - 1)],
+                                    + "&price="
+                                    + token[len(token) - 1]
+                                    + "&buyer="
+                                    + sender["last_name"]
+                                    + " "
+                                    + sender["first_name"]
                                 )
-                            else:
+                                data = json.loads(res.text)
+                                if data["result"] == "success":
+                                    await bot.send_message(
+                                        chat_id=os.getenv("CHAT_ID"),
+                                        text="Mua hàng thành công "
+                                        + " ".join(token[1 : len(token) - 1])
+                                        + " với giá "
+                                        + token[len(token) - 1],
+                                    )
+                                else:
+                                    await bot.send_message(
+                                        chat_id=os.getenv("CHAT_ID"),
+                                        text="Mua hàng thất bại " + data["error"],
+                                    )
+                            except:
                                 await bot.send_message(
                                     chat_id=os.getenv("CHAT_ID"),
                                     text="Mua hàng thất bại " + data["error"],

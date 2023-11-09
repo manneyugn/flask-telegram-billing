@@ -56,7 +56,7 @@ async def billing():
                                 )
                         elif token[0] == "/link":
                             await bot.send_message(
-                                chat_id=os.getenv("CHAT_ID"), text="/link"
+                                chat_id=os.getenv("CHAT_ID"), text="vào đây để xem bảng chi trong tháng " + os.getenv("LINK_SHEET")
                             )
                         else:
                             await bot.send_message(

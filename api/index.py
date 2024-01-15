@@ -31,13 +31,13 @@ async def billing():
     if request.method == "POST":
         body = request.json
         print("body", body)
-        message = body["message"]
+        message = body.get("message")
+        bot = telegram.Bot(os.getenv("TELEGRAM_KEY"))
         if message is not None:
             if "text" in message:
-                text = message["text"]
-                sender = message["from"]
+                text = message.get("text")
+                sender = message.get("from")
                 if text is not None:
-                    bot = telegram.Bot(os.getenv("TELEGRAM_KEY"))
                     token = text.split()
                     if len(token) > 0:
                         if token[0] == "/start":
@@ -46,6 +46,12 @@ async def billing():
                             )
                         elif token[0] == "/buy":
                             try:
+                                if not token[len(token) - 1].isnumeric():
+                                    await bot.send_message(
+                                        chat_id=os.getenv("CHAT_ID"),
+                                        text="Sai cú pháp, vui lòng thử lại"
+                                    )
+                                    return jsonify(isError=False, message="Success", statusCode=200, data="POST") 
                                 res = requests.get(
                                     os.getenv("GOOGLE_APP_SCRIPT")
                                     + "?item="
@@ -87,4 +93,9 @@ async def billing():
                                 chat_id=os.getenv("CHAT_ID"),
                                 text="Câu lệnh chưa được hỗ trợ",
                             )
+        else:
+            await bot.send_message(
+                                        chat_id=os.getenv("CHAT_ID"),
+                                        text="Vui lòng thử lại, câu lệnh chưa đúng"
+                                    )
         return jsonify(isError=False, message="Success", statusCode=200, data="POST")

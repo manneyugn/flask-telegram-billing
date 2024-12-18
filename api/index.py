@@ -4,6 +4,7 @@ import os
 import telegram
 import requests
 import json
+import http.client
 
 
 app = Flask(__name__)
@@ -23,7 +24,24 @@ def home():
 def about():
     return "About"
 
+@app.route("/cat-fact")
+async def catFact():
+    bot = telegram.Bot(os.getenv("TELEGRAM_KEY"))
 
+    conn = http.client.HTTPSConnection("catfact.ninja")
+    payload = ''
+    headers = {
+      'accept': 'application/json',
+      'X-CSRF-TOKEN': 'MIiXAo8WKG85yRgxzHIJ7g2WSkg9XGlsysjdacAJ'
+    }
+    conn.request("GET", "/fact?max_length=200", payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    
+    
+    await bot.send_message(chat_id=os.getenv("CHAT_ID"), text=data.decode("utf-8"))
+    return "Ok"
+    
 @app.route("/billing", methods=["GET", "POST"])
 async def billing():
     if request.method == "GET":

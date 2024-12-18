@@ -38,8 +38,8 @@ async def catFact():
     res = conn.getresponse()
     data = res.read()
     
-    
-    await bot.send_message(chat_id=os.getenv("CHAT_ID"), text=data.decode("utf-8"))
+    fact = json.loads(data.decode("utf-8"))
+    await bot.send_message(chat_id=os.getenv("CHAT_ID"), text=fact["fact"])
     return "Ok"
     
 @app.route("/billing", methods=["GET", "POST"])
